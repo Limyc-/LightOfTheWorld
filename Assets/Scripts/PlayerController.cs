@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
 		keyInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 		mouseInput = new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse ScrollWheel"));
 
-		Rotate();
+
 
 		if (Input.GetKey(KeyCode.Alpha1))
 		{
@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
 	private void FixedUpdate()
 	{
 		rigidbody2D.velocity = transform.up * keyInput.y * moveSpeed;
+		Rotate();
 	}
 
 	public Color32 GiveColor(Color32 c)
@@ -73,7 +74,7 @@ public class PlayerController : MonoBehaviour
 			if (c.g > 0 && color.g < 255)
 			{
 				color.g += 1;
-				c.b -= 1;
+				c.g -= 1;
 			}
 
 			light.color = color;

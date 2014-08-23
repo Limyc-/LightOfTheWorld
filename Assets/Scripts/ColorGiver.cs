@@ -13,19 +13,21 @@ public class ColorGiver : MonoBehaviour
 
 	private Color ratios;
 	private Material mat;
+	private float maxRange;
 
 	private void Awake()
 	{
 		mat = renderer.material;
 		baseColor = light.color;
 		currentColor = baseColor;
+		maxRange = light.range;
 
 		SetupRatios(mat.GetColor(tintColor));
 	}
 
 	private void OnTriggerStay2D(Collider2D other)
 	{
-		if (currentColor != Color.clear && other.CompareTag("Player"))
+		if (other.CompareTag("Player"))
 		{
 			var player = other.GetComponent<PlayerController>();
 			currentColor = player.GiveColor(currentColor);
@@ -36,20 +38,21 @@ public class ColorGiver : MonoBehaviour
 			}
 			else
 			{
-				ChangeMaterialColor(currentColor);
+				float currentMax = GetLargestChannel(currentColor) / 255f;
+				light.color = currentColor;
+				light.range = Mathf.Pow(maxRange, currentMax);
+				ChangeMaterialColor(currentMax);
 			}
 		}
 	}
 
-	private void ChangeMaterialColor(Color32 color)
+	private void ChangeMaterialColor(float largestChannel)
 	{
-		float currentMax = GetLargestChannel(color) / 255f;
-
 		Color c;
-		c.r = ratios.r * currentMax;
-		c.g = ratios.g * currentMax;
-		c.b = ratios.b * currentMax;
-		c.a = ratios.a * currentMax;
+		c.r = ratios.r * largestChannel;
+		c.g = ratios.g * largestChannel;
+		c.b = ratios.b * largestChannel;
+		c.a = ratios.a * largestChannel;
 
 		mat.SetColor(tintColor, c);
 	}
