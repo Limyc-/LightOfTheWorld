@@ -8,6 +8,9 @@ public class ColorTaker : MonoBehaviour
 {
 	private static string tintColor = "_TintColor";
 
+	[SerializeField]
+	private bool isBlackHole = false;
+
 	private Color32 baseColor;
 	private Color32 currentColor;
 
@@ -21,7 +24,10 @@ public class ColorTaker : MonoBehaviour
 		currentColor = baseColor;
 
 		maxRange = light.range;
-		light.range = 0f;
+		if (!isBlackHole)
+		{
+			light.range = 0f;
+		}
 	}
 
 	private void OnTriggerStay2D(Collider2D other)
@@ -32,10 +38,14 @@ public class ColorTaker : MonoBehaviour
 			currentColor = player.TakeColor(currentColor);
 
 			float currentMax = GetLargestChannel(currentColor) / 255f;
-			light.color = currentColor;
-			light.range = Mathf.Pow(maxRange, currentMax);
 
-			ChangeMaterialColor(currentMax);
+			if (!isBlackHole)
+			{
+				light.color = currentColor;
+				light.range = Mathf.Pow(maxRange, currentMax);
+
+				ChangeMaterialColor(currentMax);
+			}
 		}
 	}
 

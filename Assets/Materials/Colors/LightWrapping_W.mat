@@ -75,4 +75,4 @@ Material:
       data:
         first:
           name: _LightWrapping
-        second: {r: 1, g: 1, b: 1, a: .501960814}
+        second: {r: .752941191, g: .752941191, b: .752941191, a: 1}

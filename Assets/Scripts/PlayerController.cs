@@ -13,12 +13,20 @@ public class PlayerController : MonoBehaviour
 	private float moveSpeed = 7f;
 	[SerializeField]
 	private float rotationSpeed = 1f;
+	[SerializeField]
+	private CloneController cloneController;
 
 	private new Transform transform;
 	private new Rigidbody2D rigidbody2D;
 
 	private Vector2 keyInput;
 	private Vector3 mouseInput;
+
+
+	public Light Light
+	{
+		get { return light; }
+	}
 
 
 	private void Awake()
@@ -29,23 +37,28 @@ public class PlayerController : MonoBehaviour
 		light.color = color;
 	}
 
+	private void Start()
+	{
+		cloneController.ChangeLight(color);
+	}
+
 	private void Update()
 	{
 		keyInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 		mouseInput = new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse ScrollWheel"));
 
-
-
 		if (Input.GetKey(KeyCode.Alpha1))
 		{
 			color = Color.clear;
 			light.color = color;
+			cloneController.ChangeLight(color);
 		}
 
 		if (Input.GetKey(KeyCode.Alpha2))
 		{
 			color = Color.white;
 			light.color = color;
+			cloneController.ChangeLight(color);
 		}
 	}
 
@@ -78,6 +91,7 @@ public class PlayerController : MonoBehaviour
 			}
 
 			light.color = color;
+			cloneController.ChangeLight(color);
 		}
 
 		return c;
@@ -106,6 +120,7 @@ public class PlayerController : MonoBehaviour
 			}
 
 			light.color = color;
+			cloneController.ChangeLight(color);
 		}
 
 		return c;
@@ -120,5 +135,20 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	private void OnTriggerEnter2D(Collider2D other)
+	{
+		if (other.CompareTag("Border"))
+		{
+			cloneController.SwapPositions(other.transform.position, rigidbody2D.velocity * Time.fixedDeltaTime);
+		}
+	}
+
+	private void OnTriggerStay2D(Collider2D other)
+	{
+		if (other.CompareTag("Border"))
+		{
+			cloneController.SwapPositions(other.transform.position, rigidbody2D.velocity * Time.fixedDeltaTime);
+		}
+	}
 
 }

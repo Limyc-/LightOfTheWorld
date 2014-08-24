@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraFollow : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
 	[SerializeField]
 	private Transform target;
@@ -13,6 +13,12 @@ public class CameraFollow : MonoBehaviour
 	[SerializeField]
 	private bool targetIsRigidbody = true;
 
+	private Transform Main;
+	public Transform Top;
+	public Transform Bottom;
+	public Transform Left;
+	public Transform Right;
+
 	private new Transform transform;
 
 	private Vector3 velocity = Vector3.zero;
@@ -20,14 +26,18 @@ public class CameraFollow : MonoBehaviour
 	private float lastframe = 0f;
 	private float currentframe = 0f;
 	private float delta = 0f;
+
 	private void Awake()
 	{
 		transform = GetComponent<Transform>();
+		Main = Camera.main.transform;
 	}
 
 	private void Start()
 	{
-		transform.position = target.position;
+		var pos = target.position;
+		pos.z = -cameraDistance;
+		transform.position = pos;
 	}
 
 	private void Update()
@@ -54,7 +64,16 @@ public class CameraFollow : MonoBehaviour
 			FollowTarget();
 		}
 
-		transform.rotation = target.rotation;
+		RotateCameras(target.rotation);
+	}
+
+	private void RotateCameras(Quaternion rot)
+	{
+		Main.rotation = rot;
+		Top.rotation = rot;
+		Bottom.rotation = rot;
+		Left.rotation = rot;
+		Right.rotation = rot;
 	}
 
 	private void FollowTarget()
@@ -67,6 +86,29 @@ public class CameraFollow : MonoBehaviour
 			destination.z = -cameraDistance;
 			transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime, Mathf.Infinity, averageDeltaTime);
 		}
+	}
+
+	public void SetPosition(string direction)
+	{
+		switch (direction)
+		{
+			case "Top":
+				transform.position = Top.position;
+				break;
+			case "Bottom":
+				transform.position = Bottom.position;
+				break;
+			case "Left":
+				transform.position = Left.position;
+				break;
+			case "Right":
+				transform.position = Right.position;
+				break;
+			default:
+				break;
+		}
+
+		Debug.Log("Swap " + direction);
 	}
 
 }
