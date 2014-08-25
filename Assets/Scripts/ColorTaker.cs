@@ -17,6 +17,11 @@ public class ColorTaker : MonoBehaviour
 	private Material mat;
 	private float maxRange;
 
+	public Color32 CurrenColor
+	{
+		get { return currentColor; }
+	}
+
 	private void Awake()
 	{
 		mat = renderer.material;

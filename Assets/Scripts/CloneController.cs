@@ -135,6 +135,10 @@ public class CloneController : MonoBehaviour
 		clones.Add(Bottom);
 		clones.Add(Left);
 		clones.Add(Right);
+
+		var c = player.GetComponent<PlayerController>().Light.color;
+
+		ChangeLight(c);
 	}
 
 	private PlayerClone CreateClone(string name, Vector3 pos)

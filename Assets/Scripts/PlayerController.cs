@@ -5,6 +5,10 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
+	private static string tintColor = "_TintColor";
+
+	[SerializeField]
+	private new Renderer renderer;
 	[SerializeField]
 	private new Light light;
 	[SerializeField]
@@ -15,13 +19,16 @@ public class PlayerController : MonoBehaviour
 	private float rotationSpeed = 1f;
 	[SerializeField]
 	private CloneController cloneController;
+	[SerializeField]
+	private GameManager gameManager;
 
 	private new Transform transform;
 	private new Rigidbody2D rigidbody2D;
-
+	private Material mat;
 	private Vector2 keyInput;
 	private Vector3 mouseInput;
-
+	private bool isRunning = true;
+	private Color32 baseColor = new Color32(128, 128, 128, 128);
 
 	public Light Light
 	{
@@ -33,33 +40,49 @@ public class PlayerController : MonoBehaviour
 	{
 		transform = GetComponent<Transform>();
 		rigidbody2D = GetComponent<Rigidbody2D>();
+		mat = renderer.material;
 
 		light.color = color;
 	}
 
 	private void Start()
 	{
-		cloneController.ChangeLight(color);
+		ChangeMaterialColor(Color.clear);
 	}
 
 	private void Update()
 	{
-		keyInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-		mouseInput = new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse ScrollWheel"));
-
-		if (Input.GetKey(KeyCode.Alpha1))
+		if (isRunning)
 		{
-			color = Color.clear;
-			light.color = color;
-			cloneController.ChangeLight(color);
+			if (light.color == Color.clear && gameManager.SunIsLit())
+			{
+				gameManager.EndGame();
+				isRunning = false;
+			}
+			else
+			{
+				keyInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+				mouseInput = new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse ScrollWheel"));
+
+				if (Input.GetKey(KeyCode.Alpha1))
+				{
+					color = Color.clear;
+					SetColors();
+				}
+
+				if (Input.GetKey(KeyCode.Alpha2))
+				{
+					color = Color.white;
+					SetColors();
+				}
+			}
 		}
 
-		if (Input.GetKey(KeyCode.Alpha2))
+		if (Input.GetKeyDown(KeyCode.Escape))
 		{
-			color = Color.white;
-			light.color = color;
-			cloneController.ChangeLight(color);
+			Application.Quit();
 		}
+
 	}
 
 	private void FixedUpdate()
@@ -90,8 +113,7 @@ public class PlayerController : MonoBehaviour
 				c.g -= 1;
 			}
 
-			light.color = color;
-			cloneController.ChangeLight(color);
+			SetColors();
 		}
 
 		return c;
@@ -119,8 +141,7 @@ public class PlayerController : MonoBehaviour
 				c.g += 1;
 			}
 
-			light.color = color;
-			cloneController.ChangeLight(color);
+			SetColors();
 		}
 
 		return c;
@@ -135,20 +156,28 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	private void OnTriggerEnter2D(Collider2D other)
-	{
-		if (other.CompareTag("Border"))
-		{
-			cloneController.SwapPositions(other.transform.position, rigidbody2D.velocity * Time.fixedDeltaTime);
-		}
-	}
-
 	private void OnTriggerStay2D(Collider2D other)
 	{
 		if (other.CompareTag("Border"))
 		{
-			cloneController.SwapPositions(other.transform.position, rigidbody2D.velocity * Time.fixedDeltaTime);
+			cloneController.SwapPositions(other.transform.position, rigidbody2D.velocity);
 		}
 	}
 
+	private void SetColors()
+	{
+		light.color = color;
+		ChangeMaterialColor(color);
+		cloneController.ChangeLight(color);
+	}
+
+	private void ChangeMaterialColor(Color color)
+	{
+		Color c = baseColor;
+		c.r += color.r / 2f;
+		c.g += color.g / 2f;
+		c.b += color.b / 2f;
+
+		mat.SetColor(tintColor, c);
+	}
 }

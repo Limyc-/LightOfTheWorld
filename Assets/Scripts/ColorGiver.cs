@@ -15,6 +15,12 @@ public class ColorGiver : MonoBehaviour
 	private Material mat;
 	private float maxRange;
 
+	public Color32 CurrenColor
+	{
+		get { return currentColor; }
+	}
+	public int Max { get; private set; }
+
 	private void Awake()
 	{
 		mat = renderer.material;
@@ -52,7 +58,7 @@ public class ColorGiver : MonoBehaviour
 		c.r = ratios.r * largestChannel;
 		c.g = ratios.g * largestChannel;
 		c.b = ratios.b * largestChannel;
-		c.a = ratios.a * largestChannel;
+		c.a = largestChannel / 2f;
 
 		mat.SetColor(tintColor, c);
 	}
@@ -70,8 +76,8 @@ public class ColorGiver : MonoBehaviour
 		list.Add(color.r);
 		list.Add(color.g);
 		list.Add(color.b);
-		list.Add(color.a);
 
-		return list.OrderByDescending(x => x).First();
+		Max = list.OrderByDescending(x => x).First();
+		return Max;
 	}
 }

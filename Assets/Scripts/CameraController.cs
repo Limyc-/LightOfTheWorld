@@ -13,14 +13,26 @@ public class CameraController : MonoBehaviour
 	[SerializeField]
 	private bool targetIsRigidbody = true;
 
-	private Transform Main;
-	public Transform Top;
-	public Transform Bottom;
-	public Transform Left;
-	public Transform Right;
+	[SerializeField]
+	private Transform top;
+	[SerializeField]
+	private Transform bottom;
+	[SerializeField]
+	private Transform left;
+	[SerializeField]
+	private Transform right;
+	[SerializeField]
+	private Transform topLeft;
+	[SerializeField]
+	private Transform bottomLeft;
+	[SerializeField]
+	private Transform topRight;
+	[SerializeField]
+	private Transform bottomRight;
 
 	private new Transform transform;
-
+	private new Rigidbody2D rigidbody2D;
+	private Transform mainCamera;
 	private Vector3 velocity = Vector3.zero;
 	private float averageDeltaTime;
 	private float lastframe = 0f;
@@ -30,14 +42,15 @@ public class CameraController : MonoBehaviour
 	private void Awake()
 	{
 		transform = GetComponent<Transform>();
-		Main = Camera.main.transform;
+		rigidbody2D = GetComponent<Rigidbody2D>();
+		mainCamera = Camera.main.transform;
 	}
 
 	private void Start()
 	{
 		var pos = target.position;
 		pos.z = -cameraDistance;
-		transform.position = pos;
+		rigidbody2D.MovePosition(pos);
 	}
 
 	private void Update()
@@ -54,7 +67,6 @@ public class CameraController : MonoBehaviour
 		{
 			FollowTarget();
 		}
-
 	}
 
 	private void LateUpdate()
@@ -69,11 +81,11 @@ public class CameraController : MonoBehaviour
 
 	private void RotateCameras(Quaternion rot)
 	{
-		Main.rotation = rot;
-		Top.rotation = rot;
-		Bottom.rotation = rot;
-		Left.rotation = rot;
-		Right.rotation = rot;
+		mainCamera.rotation = rot;
+		top.rotation = rot;
+		bottom.rotation = rot;
+		left.rotation = rot;
+		right.rotation = rot;
 	}
 
 	private void FollowTarget()
@@ -84,31 +96,148 @@ public class CameraController : MonoBehaviour
 		{
 			var destination = target.position;
 			destination.z = -cameraDistance;
-			transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime, Mathf.Infinity, averageDeltaTime);
+			var pos = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime, Mathf.Infinity, averageDeltaTime);
+			transform.position = pos;
 		}
 	}
 
 	public void SetPosition(string direction)
 	{
+		Vector3 pos = transform.position;
+
 		switch (direction)
 		{
 			case "Top":
-				transform.position = Top.position;
+				pos = top.position;
 				break;
 			case "Bottom":
-				transform.position = Bottom.position;
+				pos = bottom.position;
 				break;
 			case "Left":
-				transform.position = Left.position;
+				pos = left.position;
 				break;
 			case "Right":
-				transform.position = Right.position;
+				pos = right.position;
 				break;
 			default:
+				Debug.LogError("Could not swap with camera '" + direction + "'");
 				break;
 		}
 
-		Debug.Log("Swap " + direction);
+		transform.position = pos;
+	}
+
+	private void OnTriggerEnter2D(Collider2D other)
+	{
+		if (other.CompareTag("Border"))
+		{
+			Debug.Log("SetCameraState = true");
+			SetCameraState(other.transform.position, true);
+
+		}
+	}
+
+	private void OnTriggerExit2D(Collider2D other)
+	{
+		if (other.CompareTag("Border"))
+		{
+			Debug.Log("SetCameraState = false");
+			SetCameraState(other.transform.position, false);
+		}
+	}
+
+	private void SetCameraState(Vector3 pos, bool isEnabled)
+	{
+		if (pos.y == 0f)
+		{
+			if (pos.x > 0f)
+			{
+				left.gameObject.SetActive(isEnabled);
+
+				if (isEnabled)
+				{
+					if (bottom.gameObject.activeInHierarchy)
+					{
+						bottomLeft.gameObject.SetActive(isEnabled);
+					}
+					else if (top.gameObject.activeInHierarchy)
+					{
+						topLeft.gameObject.SetActive(isEnabled);
+					}
+				}
+				else
+				{
+					bottomLeft.gameObject.SetActive(isEnabled);
+					topLeft.gameObject.SetActive(isEnabled);
+				}
+			}
+			else if (pos.x < 0f)
+			{
+				right.gameObject.SetActive(isEnabled);
+
+				if (isEnabled)
+				{
+					if (bottom.gameObject.activeInHierarchy)
+					{
+						bottomRight.gameObject.SetActive(isEnabled);
+					}
+					else if (top.gameObject.activeInHierarchy)
+					{
+						topRight.gameObject.SetActive(isEnabled);
+					}
+				}
+				else
+				{
+					bottomRight.gameObject.SetActive(isEnabled);
+					topRight.gameObject.SetActive(isEnabled);
+				}
+			}
+		}
+		else
+		{
+			if (pos.y > 0f)
+			{
+				bottom.gameObject.SetActive(isEnabled);
+
+				if (isEnabled)
+				{
+					if (left.gameObject.activeInHierarchy)
+					{
+						bottomLeft.gameObject.SetActive(isEnabled);
+					}
+					else if (right.gameObject.activeInHierarchy)
+					{
+						bottomRight.gameObject.SetActive(isEnabled);
+					}
+				}
+				else
+				{
+					bottomLeft.gameObject.SetActive(isEnabled);
+					bottomRight.gameObject.SetActive(isEnabled);
+				}
+			}
+			else if (pos.y < 0f)
+			{
+				top.gameObject.SetActive(isEnabled);
+
+				if (isEnabled)
+				{
+					if (left.gameObject.activeInHierarchy)
+					{
+						topLeft.gameObject.SetActive(isEnabled);
+					}
+					else if (right.gameObject.activeInHierarchy)
+					{
+						topRight.gameObject.SetActive(isEnabled);
+					}
+				}
+				else
+				{
+					bottomLeft.gameObject.SetActive(isEnabled);
+					bottomRight.gameObject.SetActive(isEnabled);
+				}
+			}
+		}
 	}
 
 }
