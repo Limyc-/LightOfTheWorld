@@ -1,10 +1,7 @@
 LightOfTheWorld
 ===============
 
-My Ludum Dare 30 submission.
-
-Made in 48 hours by myself.
-
+My Ludum Dare 30 submission. Made solo in 48 hours.
 
 Dependencies:
 
