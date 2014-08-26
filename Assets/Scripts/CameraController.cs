@@ -131,7 +131,6 @@ public class CameraController : MonoBehaviour
 	{
 		if (other.CompareTag("Border"))
 		{
-			Debug.Log("SetCameraState = true");
 			SetCameraState(other.transform.position, true);
 
 		}
@@ -141,7 +140,6 @@ public class CameraController : MonoBehaviour
 	{
 		if (other.CompareTag("Border"))
 		{
-			Debug.Log("SetCameraState = false");
 			SetCameraState(other.transform.position, false);
 		}
 	}

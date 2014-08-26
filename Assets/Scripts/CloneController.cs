@@ -20,13 +20,11 @@ public class CloneController : MonoBehaviour
 
 	private new Transform transform;
 	private List<PlayerClone> clones;
-	private Bounds levelBounds;
 	private bool playerIsRigidbody = false;
 
 	private void Awake()
 	{
 		transform = GetComponent<Transform>();
-		levelBounds = new Bounds(Vector3.zero, levelDimensions);
 	}
 
 	private void Start()
@@ -121,9 +119,8 @@ public class CloneController : MonoBehaviour
 	{
 		clones = new List<PlayerClone>(4);
 		var pos = transform.position;
-		var offset = ((CircleCollider2D)player.collider2D).radius;
-		var x = levelDimensions.x;// -offset;
-		var y = levelDimensions.y;// -offset;
+		var x = levelDimensions.x;
+		var y = levelDimensions.y;
 
 
 		Top = CreateClone("CloneTop", pos + new Vector3(0f, y));

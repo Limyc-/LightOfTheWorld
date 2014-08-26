@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
 	private new Rigidbody2D rigidbody2D;
 	private Material mat;
 	private Vector2 keyInput;
-	private Vector3 mouseInput;
+	//private Vector3 mouseInput;
 	private bool isRunning = true;
 	private Color32 baseColor = new Color32(128, 128, 128, 128);
 
@@ -62,19 +62,19 @@ public class PlayerController : MonoBehaviour
 			else
 			{
 				keyInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-				mouseInput = new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse ScrollWheel"));
+				//mouseInput = new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse ScrollWheel"));
 
-				if (Input.GetKey(KeyCode.Alpha1))
-				{
-					color = Color.clear;
-					SetColors();
-				}
+				//if (Input.GetKey(KeyCode.Alpha1))
+				//{
+				//	color = Color.clear;
+				//	SetColors();
+				//}
 
-				if (Input.GetKey(KeyCode.Alpha2))
-				{
-					color = Color.white;
-					SetColors();
-				}
+				//if (Input.GetKey(KeyCode.Alpha2))
+				//{
+				//	color = Color.white;
+				//	SetColors();
+				//}
 			}
 		}
 

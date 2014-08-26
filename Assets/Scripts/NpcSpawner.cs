@@ -24,7 +24,6 @@ public class NpcSpawner : MonoBehaviour
 		var x = levelDimensions.x;
 		var y = levelDimensions.y;
 		bounds = new Rect(-(x / 2f), -(y / 2f), x, y);
-		Debug.Log(bounds);
 	}
 
 	public void Init(float scale)
