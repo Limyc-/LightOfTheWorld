@@ -6,6 +6,9 @@ My Ludum Dare 30 submission. Made solo in 48 hours.
 
 Not everyone is as alone as they think.
 
+http://ludumdare.com/compo/ludum-dare-30/?action=preview&uid=24802
+
+
 Goal:
 
 	Steal light from the 3 stars and then find the darkened sun.
